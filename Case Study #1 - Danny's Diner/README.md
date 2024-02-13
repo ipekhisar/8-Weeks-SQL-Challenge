@@ -43,7 +43,7 @@ Danny has shared with you 3 key datasets for this case study:
 
 ### Solutions
 
-Q1. What is the total amount each customer spent at the restaurant?
+###Q1. What is the total amount each customer spent at the restaurant?
 ```sql
 SELECT CUSTOMER_ID, SUM(PRICE) TOTAL_AMOUNT FROM SALES S
 INNER JOIN MENU M ON M.PRODUCT_ID=S.PRODUCT_ID
@@ -55,7 +55,7 @@ GROUP BY CUSTOMER_ID
 |B|74|
 |C|36|
 
-Q2. How many days has each customer visited the restaurant?
+###Q2. How many days has each customer visited the restaurant?
 ```sql
 SELECT CUSTOMER_ID, COUNT(DISTINCT ORDER_DATE) VISITING_DAY FROM SALES
 GROUP BY CUSTOMER_ID
@@ -67,7 +67,7 @@ GROUP BY CUSTOMER_ID
 |C|2|
 
 
-Q3. What was the first item from the menu purchased by each customer?
+###Q3. What was the first item from the menu purchased by each customer?
 ```sql
 WITH TABLE_ AS (
 select CUSTOMER_ID, S.PRODUCT_ID, ORDER_dATE, ROW_NUMBER() OVER (PARTITION BY CUSTOMER_ID ORDER BY ORDER_dATE) AS ROW_NO from SALES S
@@ -82,7 +82,7 @@ WHERE ROW_NO=1
 |B|2|2021-01-01
 |C|3|2021-01-01
 
-Q4. What is the most purchased item on the menu and how many times was it purchased by all customers?
+###Q4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 
 ```sql
 SELECT TOP 1 S.PRODUCT_ID, PRODUCT_NAME, COUNT(*) COUNT_PURCHASED FROM SALES S
@@ -94,7 +94,7 @@ ORDER BY COUNT(*) DESC
 |-------------|------------|-----------
 |3|ramen|8
 
-Q5. Which item was the most popular for each customer?
+###Q5. Which item was the most popular for each customer?
 ```sql
 WITH TABLE_ AS(
 SELECT CUSTOMER_ID, PRODUCT_ID, COUNT(PRODUCT_ID) COUNT_PRODUCT, ROW_NUMBER() OVER (PARTITION BY CUSTOMER_ID ORDER BY COUNT(PRODUCT_ID) DESC) AS ROW_ FROM SALES
@@ -108,7 +108,7 @@ WHERE ROW_=1
 |B|1|
 |C|3|
 
-Q6. Which item was purchased first by the customer after they became a member?
+###Q6. Which item was purchased first by the customer after they became a member?
 ```sql
 WITH TABLE_ AS(
 SELECT S.CUSTOMER_ID,  S.PRODUCT_ID,PRODUCT_NAME , ORDER_DATE, JOIN_DATE, ROW_NUMBER() OVER (PARTITION BY S.CUSTOMER_ID ORDER BY ORDER_dATE) AS ROWS_ FROM SALES S
@@ -124,7 +124,7 @@ WHERE ROWS_ =1
 |A|curry|2021-01-07
 |B|sushi|2021-01-11
 
-Q7. Which item was purchased just before the customer became a member?
+###Q7. Which item was purchased just before the customer became a member?
 ```sql
 WITH TABLE_ AS(
 SELECT S.CUSTOMER_ID,S.PRODUCT_ID, PRODUCT_NAME, ORDER_DATE, JOIN_DATE, ROW_NUMBER() OVER (PARTITION BY S.CUSTOMER_ID ORDER BY ORDER_dATE DESC) AS ROWS_ FROM SALES S
@@ -140,7 +140,7 @@ WHERE ROWS_ =1
 |A|1|sushi|2021-01-01
 |B|1|sushi|2021-01-04
 
-Q8. What is the total items and amount spent for each member before they became a member?
+###Q8. What is the total items and amount spent for each member before they became a member?
 ```sql
 WITH TABLE_ AS(
 SELECT S.CUSTOMER_ID AS CUST_ID,S.PRODUCT_ID, PRODUCT_NAME, JOIN_DATE, PRICE FROM SALES S
@@ -156,7 +156,7 @@ GROUP BY CUST_ID
 |A|2|25
 |B|3|40
 
-Q9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
+###Q9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
 
 ```sql
 SELECT CUSTOMER_ID, SUM 
@@ -174,7 +174,7 @@ GROUP BY CUSTOMER_ID
 |B|940
 |C|360
 
-Q10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
+###Q10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
 
 
 ### BONUS QUESTION
