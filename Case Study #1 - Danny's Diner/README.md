@@ -67,7 +67,7 @@ GROUP BY CUSTOMER_ID
 |C|2|
 
 
-###Q3. What was the first item from the menu purchased by each customer?
+### Q3. What was the first item from the menu purchased by each customer?
 ```sql
 WITH TABLE_ AS (
 select CUSTOMER_ID, S.PRODUCT_ID, ORDER_dATE, ROW_NUMBER() OVER (PARTITION BY CUSTOMER_ID ORDER BY ORDER_dATE) AS ROW_NO from SALES S
