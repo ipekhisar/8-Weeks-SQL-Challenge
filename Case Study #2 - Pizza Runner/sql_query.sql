@@ -1,5 +1,4 @@
-
-##Q1. How many pizzas were ordered?
+Q1. How many pizzas were ordered?
 
 select*from CUSTOMER_ORDERS select*from RUNNER_ORDERS
 select COUNT(*) countofpizza from CUSTOMER_ORDERS
