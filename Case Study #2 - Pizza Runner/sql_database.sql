@@ -1,5 +1,5 @@
 --create database named pizza_runner
---CREATE DATABASE pizza_runner
+CREATE DATABASE pizza_runner
 --create table runners, customer orders, runner orders, pizza names, pizza recipes, pizza toppings
 CREATE TABLE RUNNERS
 (runner_id int , registration_date date)
