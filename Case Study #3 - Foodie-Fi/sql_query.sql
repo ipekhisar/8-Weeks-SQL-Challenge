@@ -1,16 +1,17 @@
-select*from subscriptions
-select*from plans
-
---Based off the 8 sample customers provided in the sample from the subscriptions table, write a brief description about each customer’s onboarding journey.
+A.  CUSTOMER JOURNEY
+	
+Based off the 8 sample customers provided in the sample from the subscriptions table, write a brief description about each customerâ€™s onboarding journey.
 
 select customer_id, plan_name, start_date from subscriptions S
 INNER JOIN plans P on P.plan_id=S.plan_id
 
---How many customers has Foodie-Fi ever had?
+B. DATA ANALYSIS QUESTIONS
+	
+Q1.How many customers has Foodie-Fi ever had?
 
 SELECT COUNT(DISTINCT customer_id) AS TOTAL_CUSTOMER FROM subscriptions
 
---What is the monthly distribution of trial plan start_date values for our dataset - use the start of the month as the group by value
+Q2.What is the monthly distribution of trial plan start_date values for our dataset - use the start of the month as the group by value
 
 WITH CTE AS (
 SELECT customer_id, plan_id, start_date, DATEPART(MONTH, start_date) month_ ,ROW_NUMBER() OVER(PARTITION BY customer_id order by start_date) row FROM subscriptions)
@@ -20,7 +21,7 @@ where row=1
 group by month_
 order by MONTH_
 
---What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name
+Q3.What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name
 
 select s.plan_id, plan_name, COUNT(customer_id) count_2021 from subscriptions S 
 INNER JOIN plans P ON P.plan_id=S.plan_id
@@ -28,13 +29,13 @@ where DATEPART(YEAR, start_date) > 2020
 GROUP BY s.plan_id,plan_name
 ORDER BY count_2021
 
---What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
+Q4.What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
 
 select COUNT(DISTINCT customer_id) as churned_count,
 ROUND((CAST(COUNT(DISTINCT customer_id) AS FLOAT)/(SELECT COUNT(DISTINCT customer_id) from subscriptions))*100,2)
 from subscriptions where plan_id=4	
   
---How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
+Q5.How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
  
 select*from subscriptions
 
@@ -47,7 +48,7 @@ ROUND(COUNT(DISTINCT customer_id)*100/(Select COUNT(DISTINCT customer_id) from s
 FROM CTE 
 WHERE row=2 and plan_name='churn'
 
---What is the number and percentage of customer plans after their initial free trial?
+Q6.What is the number and percentage of customer plans after their initial free trial?
 
 WITH CTE AS (SELECT customer_id, plan_name, start_date ,ROW_NUMBER() OVER(PARTITION BY customer_id order by start_date) row FROM subscriptions S
 INNER JOIN plans P ON P.plan_id=S.plan_id)
@@ -59,7 +60,7 @@ wHERE row=2
 GROUP BY plan_name
 ORDER BY COUNT_OF_CUSTOMER DESC
 
---What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
+Q7.What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
 
 WITH CTE AS (SELECT customer_id, plan_name, start_date ,ROW_NUMBER() OVER(PARTITION BY customer_id order by start_date DESC) row FROM subscriptions S
 INNER JOIN plans P ON P.plan_id=S.plan_id
@@ -69,14 +70,14 @@ ROUND(COUNT(DISTINCT customer_id)*100.0/(Select COUNT(DISTINCT customer_id) from
 from CTE where row=1
 GROUP BY plan_name
 
---How many customers have upgraded to an annual plan in 2020?
+Q8.How many customers have upgraded to an annual plan in 2020?
 
 WITH CTE AS (SELECT customer_id, plan_name, start_date ,ROW_NUMBER() OVER(PARTITION BY customer_id order by start_date DESC) row FROM subscriptions S
 INNER JOIN plans P ON P.plan_id=S.plan_id
 Where DATEPART(YEAR, start_date)='2020')
 SELECT COUNT(*) FROM CTE WHERE row='1' and plan_name='pro annual'
 
---How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?
+Q9.How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?
 
 SELECT*FROM subscriptions
 
@@ -91,7 +92,7 @@ SELECT AVG(DATEDIFF(DAY,c.start_Date,c2.start_date))
 from CTE C
 INNER JOIN CTE2 C2 ON C.customer_id=C2.customer_id
 
---Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
+Q10.Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
 
 WITH CTE AS (SELECT customer_id, plan_name, start_date FROM subscriptions S
 INNER JOIN plans P ON P.plan_id=S.plan_id
@@ -114,7 +115,7 @@ END as days_
 from CTE C
 INNER JOIN CTE2 C2 ON C.customer_id=C2.customer_id
 
---How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
+Q11.How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
 
 WITH CTE AS (
 SELECT customer_id, plan_name, start_date ,ROW_NUMBER() OVER(PARTITION BY customer_id order by start_date DESC) row FROM subscriptions S
@@ -124,7 +125,9 @@ Where DATEPART(YEAR, start_date)='2020')
 SELECT COUNT(*) FROM CTE 
 WHERE row=1 and plan_name='basic monthly' and row=2 and plan_name='basic monthly'
 
---The Foodie-Fi team wants you to create a new payments table for the year 2020 that includes amounts paid by each customer in the subscriptions table with the following requirements:
+C. CHALLENGE PAYMENT QUESTIONS
+
+The Foodie-Fi team wants you to create a new payments table for the year 2020 that includes amounts paid by each customer in the subscriptions table with the following requirements:
 
 WITH CTE AS (
 	SELECT 
@@ -166,7 +169,3 @@ WHERE amount IS NOT NULL
 ORDER BY customer_id
 OPTION (MAXRECURSION 365)
 
---How would you calculate the rate of growth for Foodie-Fi?
-
-select*from plans
-select*from subscriptions
