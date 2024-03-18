@@ -62,9 +62,24 @@ CAST(100.00*SUM(CASE WHEN [demographic]='unknown' THEN yearly_Sales END)/ SUM(ye
 FROM CTE
 GROUP BY [calendar_year]
 
-
 --8.Which age_band and demographic values contribute the most to Retail sales?
 
+select*from [dbo].[current_weekly_sales]
 
+DECLARE @retailsales AS BIGINT
+SET @retailsales=(SELECT SUM(sales) FROM [dbo].[current_weekly_sales] WHERE [platform]= 'Retail')
+
+select [age_band], [demographic], 
+SUM([sales]) as Retail_sales,
+CAST(100.00*SUM([sales])/@retailsales as decimal(5,2)) as CONT
+from [dbo].[current_weekly_sales] 
+WHERE [platform]= 'Retail'
+GROUP BY [age_band], [demographic]
 
 --9.Can we use the avg_transaction column to find the average transaction size for each year for Retail vs Shopify? If not - how would you calculate it instead?
+
+SELECT [calendar_year], [platform], 
+AVG(avg_transaction) avg_transaction_row,
+SUM(sales)/SUM(transactions) measure_grup FROM [dbo].[current_weekly_sales] 
+GROUP BY [calendar_year], [platform]
+
